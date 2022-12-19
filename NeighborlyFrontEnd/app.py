@@ -65,7 +65,6 @@ def rss():
 def home():
     response = requests.get(settings.API_URL + '/getAdvertisements')
     response2 = requests.get(settings.API_URL + '/getPosts')
-
     ads = response.json()
     posts = response2.json()
     return render_template("index.html", ads=ads, posts=posts)
@@ -125,9 +124,61 @@ def update_ad_request(id):
 
 @app.route('/ad/delete/<id>', methods=['POST'])
 def delete_ad_request(id):
-    response = requests.delete(settings.API_URL + '/deleteAdvertisement?id=' + id)
+    response = requests.delete(settings.API_URL + '/deleteAdvertisement?id=' + id + '&code=' + settings.DELETE_ADVERTISEMENT_FUNCTION_KEY)
     if response.status_code == 200:
         return redirect(url_for('home'))
+
+
+@app.route('/post/new',methods=['GET','POST'])
+def new_post():
+    if request.method == 'POST':
+        post_data = {
+            'title' : request.form['title'],
+            'city' : request.form['city'],
+            'description' : request.form['description'],
+            'imgUrl' : request.form['imgUrl'],
+            'publishedDate' : request.form['publishedDate']
+        }
+        response = requests.post(settings.API_URL +"/createPost", json = json.dumps(post_data))
+        return redirect(url_for('home'))
+    else:
+        return render_template('new_post.html')
+
+
+@app.route('/post/view/<id>',methods = ['GET'])
+def view_post(id):
+    response = requests.get(settings.API_URL + "/getPost?id=" + id)
+    post = response.json()
+    return render_template('view_post.html',post=post)
+
+@app.route('/post/edit/<id>',methods=['GET','POST'])
+def edit_post(id):
+    if request.method == 'POST':
+        post_data  = {
+        'title' : request.form['title'],
+        'city' : request.form['city'],
+        'description' : request.form['description'],
+        'imgUrl' : request.form['imgUrl'],
+        'pubishedDate' : request.form['publishedDate']
+    }
+        response = requests.put(settings.API_URL + "/updatePost?id=" + id,json = json.dumps(post_data))
+        return redirect(url_for('home'))
+    else:
+        response = requests.get(settings.API_URL + "/getPost?id=" + id)
+        post = response.json()
+        return render_template('edit_post.html',post=post)
+
+@app.route('/post/delete/<id>',methods=['GET','POST'])
+def delete_post(id):
+    if request.method == 'POST':
+        response = requests.delete(settings.API_URL + "/deletePost?id=" + id +'&code=' +settings.DELETE_POST_FUNCTION_KEY) 
+        if response.status_code == 200:
+            return redirect(url_for('home'))
+
+    else:
+        response = requests.get(settings.API_URL + "/getPost?id=" + id)
+        post = response.json()
+        return render_template('delete_post.html',post = post)
 
 # running app
 def main():

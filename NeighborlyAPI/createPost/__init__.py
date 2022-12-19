@@ -11,7 +11,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             url = os.environ.get('COSMOS_DB_CONNECTION_STRING')
             client = pymongo.MongoClient(url)
             database = client['demotable']
-            collection = database['advertisements']
+            collection = database['posts']
 
             rec_id1 = collection.insert_one(eval(request))
 

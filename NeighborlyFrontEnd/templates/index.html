@@ -43,15 +43,21 @@
                         <a class="btn btn-danger btn-xs" href="ad/delete/{{ a._id['$oid'] }}">Delete</a>
                     </div>
                  </div><!-- end panel  -->
-                {% endfor %}       
+                {% endfor %}   
+                <div class="mx-auto add-div"><a id="add-ad-button" class="btn btn-neighborly" href="/post/new">Create a new post </a></div>    
                 <h3 class="ml-2"> General Posts </h3>
                 {% for p in posts %}
                 <div class="panel">
                     <div class="panel-body panel-neighborly">
-                        <div class="panel-title">{{p.title}}</div>
+                        <div class="panel-title"> <a href="/post/view/{{ p._id['$oid'] }}">{{p.title}}</a></div>
                         <p class="text-muted"> {{ p.description }}</p>
+                        <p class="test-muted">Published Date: {{ p.publishedDate }}</p>
                         <p><img class="img-small" width="200" src={{p.imgUrl}}></p>
                     </div><!-- end card-body -->
+                    <div class="panel-footer">
+                        <a class="btn btn-warning btn-xs" href="post/edit/{{ p._id['$oid'] }}">Update</a>
+                        <a class="btn btn-danger btn-xs" href="post/delete/{{ p._id['$oid'] }}">Delete</a>
+                    </div>
                  </div><!-- end card -->
                 {% endfor %}       
                
